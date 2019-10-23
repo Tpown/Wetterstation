@@ -1,0 +1,124 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: weather_service
+    ports:
+    - 127.0.0.1:5432:5432
+
+  hivemq:
+    image: hivemq/hivemq4
+    ports:
+    - 127.0.0.1:8080:8080
+    - 127.0.0.1:1883:1883
+
+  weather-service-0:
+    build:
+      context: .
+      dockerfile: .docker/weather_service/Dockerfile
+    image: weather-service-0
+    depends_on:
+    - db
+    - hivemq
+    ports:
+    - 127.0.0.1:9090:9090
+    command: ./goapp "9090"
+
+  weather-service-1:
+    build:
+      context: .
+      dockerfile: .docker/weather_service/Dockerfile
+    image: weather-service-1
+    depends_on:
+    - db
+    - hivemq
+    ports:
+    - 127.0.0.1:9091:9091
+    command: ./goapp "9091"
+
+  weather-service-2:
+    build:
+      context: .
+      dockerfile: .docker/weather_service/Dockerfile
+    image: weather-service-2
+    depends_on:
+    - db
+    - hivemq
+    ports:
+    - 127.0.0.1:9092:9092
+    command: ./goapp "9092"
+
+  weather-station-0:
+    build:
+      context: .
+      dockerfile: .docker/weather_station/Dockerfile
+    image: weather-station-0
+    ports:
+    - 127.0.0.1:7070:7070
+    depends_on:
+    - db
+    - hivemq
+    command: ./goapp "7070" "3"
+
+ # weather-station-1:
+  #  build:
+   #   context: .
+    #  dockerfile: .docker/weather_station/Dockerfile
+    #image: weather-station-1
+    #ports:
+    #- 127.0.0.1:7071:7071
+    #depends_on:
+    #- db
+    #- hivemq
+    #command: ./goapp "7071" "3"
+
+  #weather-station-2:
+    #build:
+     # context: .
+      #dockerfile: .docker/weather_station/Dockerfile
+    #image: weather-station-2
+    #ports:
+    #- 127.0.0.1:7072:7072
+   # depends_on:
+    #- db
+    #- hivemq
+    #command: ./goapp "7072" "3"
+
+  sensor-temp:
+    build:
+      context: .
+      dockerfile: .docker/sensor/Dockerfile
+    image: sensor
+    ports:
+    - 127.0.0.1:6001:6001
+    command: ./goapp -t
+
+  sensor-hum:
+    build:
+      context: .
+      dockerfile: .docker/sensor/Dockerfile
+    image: sensor
+    ports:
+    - 127.0.0.1:6002:6002
+    command: ./goapp -h
+
+  sensor-wind:
+    build:
+      context: .
+      dockerfile: .docker/sensor/Dockerfile
+    image: sensor
+    ports:
+    - 127.0.0.1:6003:6003
+    command: ./goapp -w
+
+  sensor-rain:
+    build:
+      context: .
+      dockerfile: .docker/sensor/Dockerfile
+    image: sensor
+    ports:
+    - 127.0.0.1:6004:6004
+    command: ./goapp -r
