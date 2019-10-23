@@ -2,7 +2,7 @@
 
 ## Allgemein
 
-Ein Wetterstation bekommt Daten von vier Sensoren, diese werden an mehrere Wetterdienste übertragen. 
+Eine Wetterstation bekommt Daten von vier Sensoren, diese werden an mehrere Wetterdienste übertragen. 
 Über einen Webbrowser können die Sensordaten abgerufen werden.
 
 # Systemdesign
